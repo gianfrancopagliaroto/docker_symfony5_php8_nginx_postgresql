@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./:/app
+
+  php:
+    network_mode: "host"
+    build: ./
+    environment:
+      PHP_IDE_CONFIG: "serverName=serverName"
+    volumes:
+      - ./:/app
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+  db:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "dbname"
+      POSTGRES_USER: "dbuser"
+      POSTGRES_PASSWORD: "dbpassword"
+    ports:
+      - "5432:5432"
